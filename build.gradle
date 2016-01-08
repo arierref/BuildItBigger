@@ -1,0 +1,32 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.5.0'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+task tests {
+    project(":backend").afterEvaluate { backend ->
+        //daemon : Specifies whether the local development server should run in the background. When true, this task completes as soon as the server has started. When false, this task blocks until the local development server is stopped (defaults to false).
+        backend.extensions.appengine.daemon = true
+    }
+    dependsOn ":backend:appengineRun"
+    finalizedBy ":app:connectedAndroidTest"
+}
+task testTask {
+    dependsOn "tests"
+    finalizedBy ":backend:appengineStop"
+}
